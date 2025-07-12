@@ -171,17 +171,97 @@ The application uses SQLite for simplicity. The database file (`ecommerce.db`) w
 
 ## Tips
 
-> Qu'est ce qu'un CDN ?
+### 🌐 Qu'est-ce qu'un CDN ?
+Un CDN (Content Delivery Network) est un réseau de serveurs distribués géographiquement qui permet de diffuser du contenu (comme des fichiers JavaScript, CSS, images) de manière plus rapide et efficace. 
 
-> Pourquoi privilegier un framework frontend et un framework backend ?
+**Avantages :**
+- Temps de chargement réduits pour les utilisateurs
+- Moins de charge sur votre serveur
+- Meilleure disponibilité et résilience
+- Mise en cache intelligente
 
-> La Syntaxe Moustache commune au moteur de Template Jinja et Vue comment integrer des compossant vue dans un template Jinja ?
+### 🏗️ Pourquoi privilégier une architecture frontend/backend séparée ?
 
+**Avantages :**
+- Séparation claire des responsabilités
+- Meilleure maintenabilité et évolutivité
+- Possibilité de développer frontend et backend indépendamment
+- Réutilisation des APIs pour différentes applications (web, mobile, etc.)
+- Meilleure performance grâce à la spécialisation des équipes
 
-> Genrer les logs
+### 🧩 Intégration de Vue.js dans les templates Jinja
 
+#### 📌 Problème de délimiteurs
 
-> Gerer les migration de bases de données
+La syntaxe moustache `{{ ... }}` est utilisée à la fois par Jinja2 et Vue.js, ce qui crée des conflits.
+
+#### 🔧 Solutions disponibles
+
+##### ✅ Méthode 1 : Balises `{% raw %}` de Jinja
+```jinja
+{% raw %}
+    <!-- Code Vue ici -->
+{% endraw %}
+```
+
+##### ✅ Méthode 2 : Changer les délimiteurs Vue.js
+```js
+createApp({
+    delimiters: ['[[', ']]'],
+    setup() {
+        const cartItems = ref([]);
+        // Autres hooks...
+    }
+}).mount('#app');
+```
+
+### 📝 Génération des logs
+
+**Avec Python (Flask) :**
+```python
+import logging
+
+# Configuration de base
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+# Utilisation
+logger = logging.getLogger(__name__)
+logger.info('Message d\'information')
+logger.error('Message d\'erreur')
+```
+
+### 🗄️ Gestion des migrations de base de données
+
+**Flask-Migrate** est une extension basée sur **Alembic** qui permet de :
+
+- Générer automatiquement des scripts de migration à partir des modèles SQLAlchemy
+- Appliquer les migrations avec `flask db upgrade`
+- Revenir en arrière avec `flask db downgrade`
+- Gérer l'historique des versions du schéma de base de données
+
+**Commandes principales :**
+```bash
+# Initialiser les migrations
+flask db init
+
+# Créer une nouvelle migration
+flask db migrate -m "Description des changements"
+
+# Appliquer les migrations
+flask db upgrade
+
+# Revenir en arrière
+flask db downgrade
+```
+
+Cela rend votre application **évolutive**, **maintenable** et **adaptée aux environnements collaboratifs**.
 
 
 
