@@ -81,9 +81,9 @@ A simple e-commerce application built with Flask and Vue.js.
 src/
 ├── instance/               # Database and instance-specific files
 ├── static/
-│   └── js/
-│       ├── catalog.js     # Vue application for catalog page
-│       └── cart.js        # Vue application for cart page
+│   └── components/
+│       ├── catalog.vue     # Vue application for catalog page
+│       └── cart.vue        # Vue application for cart page
 ├── templates/
 │   ├── base.html          # Base template with common layout
 │   ├── catalog.html       # Product catalog page
@@ -108,7 +108,7 @@ The application uses SQLite for simplicity. The database file (`ecommerce.db`) w
 
 ### Adding New Features
 1. Add new routes in `app.py`
-2. Create new Vue components in `static/js/`
+2. Create new Vue components in `static/components/`
 3. Add new templates in the `templates/` directory
 
 ### Styling
@@ -116,11 +116,57 @@ The application uses SQLite for simplicity. The database file (`ecommerce.db`) w
 - Custom CSS can be added in the `<style>` blocks of each template
 - For component-specific styles, consider using scoped styles in Vue components
 
+## Acknowledgments
+
+### APIs (to enrich the db with fake data)
+- [FakeStore API](https://fakestoreapi.com/) for sample product data
+
+### Frontend
+- [Bootstrap 5](https://getbootstrap.com/) for the responsive design framework
+- [Vue.js](https://vuejs.org/) for the reactive frontend framework
+- [Axios](https://axios-http.com/) for making HTTP requests
+
+### Backend
+- [Flask](https://flask.palletsprojects.com/) for the backend framework
+- [WTForms](https://wtforms.readthedocs.io/en/stable/) for form secure handling
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/) for database operations
+- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/) for database migrations
+- [loguru](https://loguru.readthedocs.io/en/stable/) for logging
+- [requests](https://requests.readthedocs.io/en/latest/) for making HTTP requests
+- [pytest](https://docs.pytest.org/en/stable/) for testing
+- [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/) for code coverage
+- [python-dotenv](https://pypi.org/project/python-dotenv/) for environment variables
+
+
+
+
+
+
+
+## 🧱 Comparaison des stacks : Flask + Vue.js vs Django + Coton
+
+
+Table comparatif
+
+
+
+## Tips
+
+> Qu'est ce qu'un CDN ?
+
+> Pourquoi privilegier un framework frontend et un framework backend ?
+
+> La Syntaxe Moustache commune au moteur de Template Jinja et Vue comment integrer des compossant vue dans un template Jinja ?
+
+
+> Genrer les logs
+
+
+> Gerer les migration de bases de données
+
+
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-- [FakeStore API](https://fakestoreapi.com/) for sample product data
-- [Bootstrap 5](https://getbootstrap.com/) for the responsive design framework
-- [Vue.js](https://vuejs.org/) for the reactive frontend framework
