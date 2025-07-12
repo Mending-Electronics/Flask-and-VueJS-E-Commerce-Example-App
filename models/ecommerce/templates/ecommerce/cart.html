@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div id="app" data-checkout-url="{{ url_for('checkout') }}">
+    <h1 class="mb-4">Your Shopping Cart</h1>
+    
+    <div v-if="cartItems.length === 0" class="text-center py-5">
+        <i class="fas fa-shopping-cart fa-5x text-muted mb-3"></i>
+        <h3>Your cart is empty</h3>
+        <p class="text-muted">Browse our products and add some items to your cart</p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+    
+    <div v-else>
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div v-for="item in cartItems" :key="item.id" class="cart-item d-flex mb-4 pb-4 border-bottom">
+                            <img :src="item.product.image" :alt="item.product.title" class="cart-item-image me-3">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1">[[ item.product.title ]]</h5>
+                                <p class="text-muted mb-2">[[ item.product.category ]]</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="input-group" style="width: 120px;">
+                                        <button class="btn btn-outline-secondary" @click="updateQuantity(item, -1)">-</button>
+                                        <input type="number" class="form-control text-center" v-model.number="item.quantity" min="1" @change="updateCartItem(item)">
+                                        <button class="btn btn-outline-secondary" @click="updateQuantity(item, 1)">+</button>
+                                    </div>
+                                    <button class="btn btn-link text-danger ms-3" @click="removeFromCart(item)">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-end" style="width: 100px;">
+                                <div class="fw-bold">$[[ (item.product.price * item.quantity).toFixed(2) ]]</div>
+                                <small class="text-muted">$[[ item.product.price.toFixed(2) ]] each</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal ([[ totalItems ]] items)</span>
+                            <span>$[[ subtotal.toFixed(2) ]]</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                            <span>Total</span>
+                            <span>$[[ subtotal.toFixed(2) ]]</span>
+                        </div>
+                        <button class="btn btn-primary w-100 py-2" @click="checkout">
+                            Proceed to Checkout
+                        </button>
+                        <div class="text-center mt-2">
+                            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Vue app is loaded from static/js/cart.js -->
+<script src="{{ url_for('static', filename='ecommerce/components/cart.vue') }}" type="text/javascript"></script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.cart-item-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+</style>
+{% endblock %}

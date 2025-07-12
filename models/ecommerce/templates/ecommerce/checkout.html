@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/form.html' import render_field, render_form_row, render_hidden_errors %}
+
+{% block title %}Checkout - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Checkout</h1>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('checkout') }}" novalidate>
+                        {{ form.hidden_tag() }}
+                        {{ render_hidden_errors(form) }}
+                        
+                        <h6 class="mb-3">Contact Information</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                {{ render_field(form.first_name, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ render_field(form.last_name, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-12">
+                                {{ render_field(form.email, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-12">
+                                {{ render_field(form.phone, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                        </div>
+                        
+                        <h6 class="mb-3">Shipping Address</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                {{ render_field(form.address, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-12">
+                                {{ render_field(form.address2, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ render_field(form.city, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ render_field(form.state, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ render_field(form.zip_code, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ render_field(form.country, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <h6 class="mb-3">Payment Method</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12">
+                                {{ render_field(form.payment_method, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                            </div>
+                            
+                            <!-- Credit Card Fields (initially display) -->
+                            <div id="credit-card-fields">
+                                <div class="col-12">
+                                    {{ render_field(form.card_number, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ render_field(form.card_expiry, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ render_field(form.card_cvv, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                                </div>
+                                <div class="col-12">
+                                    {{ render_field(form.card_name, form_type='horizontal', horizontal_columns=('lg', 4, 8)) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-lock me-2"></i>Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal ({{ cart_items|length }} items)</span>
+                        <span>${{ "%.2f"|format(subtotal) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tax (10%)</span>
+                        <span>${{ "%.2f"|format(tax) }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+                        <span>Total</span>
+                        <span>${{ "%.2f"|format(total) }}</span>
+                    </div>
+                    
+                    <!-- Cart Items -->
+                    <div class="border-top pt-3">
+                        <h6 class="mb-3">Your Items</h6>
+                        {% for item in cart_items %}
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="{{ item.product.image }}" alt="{{ item.product.title }}" 
+                                 class="me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">{{ item.product.title }}</div>
+                                <div class="text-muted small">Qty: {{ item.quantity }}</div>
+                            </div>
+                            <div class="text-end">
+                                <div>${{ "%.2f"|format(item.product.price * item.quantity) }}</div>
+                                <small class="text-muted">${{ "%.2f"|format(item.product.price) }} each</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Show/hide credit card fields based on payment method
+const paymentMethod = document.getElementById('{{ form.payment_method.id }}');
+const creditCardFields = document.getElementById('credit-card-fields');
+
+if (paymentMethod && creditCardFields) {
+    paymentMethod.addEventListener('change', function() {
+        if (this.value === 'credit') {
+            creditCardFields.classList.remove('d-none');
+        } else {
+            creditCardFields.classList.add('d-none');
+        }
+    });
+}
+
+// Format card number
+const cardNumber = document.getElementById('{{ form.card_number.id }}');
+if (cardNumber) {
+    cardNumber.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+        this.value = value.trim();
+    });
+}
+
+// Format expiry date
+const cardExpiry = document.getElementById('{{ form.card_expiry.id }}');
+if (cardExpiry) {
+    cardExpiry.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, '');
+        if (value.length > 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        this.value = value;
+    });
+}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
